@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/coin_list_fragment"
+        android:icon="@drawable/ic_timeline"
+        android:title="@string/nav_bar_coins"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/favourite_list_fragment"
+        android:icon="@drawable/ic_favourite"
+        android:title="@string/nav_bar_favourite"
+        app:showAsAction="ifRoom" />
+</menu>
