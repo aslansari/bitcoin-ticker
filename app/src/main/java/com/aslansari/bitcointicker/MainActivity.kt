@@ -6,7 +6,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.aslansari.bitcointicker.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
 

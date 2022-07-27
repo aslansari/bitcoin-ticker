@@ -1,6 +1,6 @@
-package com.aslansari.bitcointicker.coin.data
+package com.aslansari.bitcointicker.coin.ui
 
-data class CoinDTO(
+data class CoinListItem(
     val id: String,
     val symbol: String,
     val name: String,

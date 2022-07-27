@@ -8,7 +8,6 @@ class CoinRemoteDataSource @Inject constructor(
 ) {
 
     suspend fun getCoinList(): List<CoinDTO> {
-        val response = coinService.getCoinList(false)
-        return response.coinList
+        return coinService.getCoinList(false)
     }
 }
