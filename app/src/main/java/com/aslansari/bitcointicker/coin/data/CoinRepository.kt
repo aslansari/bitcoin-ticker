@@ -1,6 +1,7 @@
 package com.aslansari.bitcointicker.coin.data
 
 import com.aslansari.bitcointicker.coin.data.local.CoinLocalDataSource
+import com.aslansari.bitcointicker.coin.data.remote.CoinDetailsResponse
 import com.aslansari.bitcointicker.coin.data.remote.CoinRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -19,5 +20,9 @@ class CoinRepository @Inject constructor(
             coinLocalDataSource.addCoins(list)
         }
         return coinLocalDataSource.getCoinList()
+    }
+
+    suspend fun getCoinDetails(coinId: String): CoinDetailsResponse {
+        return coinRemoteDataSource.getCoinDetail(coinId)
     }
 }

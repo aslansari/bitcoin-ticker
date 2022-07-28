@@ -9,11 +9,19 @@ import com.aslansari.bitcointicker.databinding.CoinListItemBinding
 
 class CoinListAdapter: ListAdapter<CoinListItem, CoinListAdapter.CoinItemViewHolder>(CoinDiffUtil) {
 
+    var itemClickListener: ((CoinListItem) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinItemViewHolder {
         val binding = CoinListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = CoinItemViewHolder(binding)
         holder.itemView.setOnClickListener {
-
+            val adapterPos = holder.adapterPosition
+            if (adapterPos != RecyclerView.NO_POSITION) {
+                itemClickListener?.let { listener ->
+                    val item = getItem(adapterPos)
+                    listener(item)
+                }
+            }
         }
         return holder
     }

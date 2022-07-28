@@ -8,7 +8,25 @@
     <fragment
         android:id="@+id/coin_list_fragment"
         android:name="com.aslansari.bitcointicker.coin.ui.CoinListFragment"
-        tools:layout="@layout/fragment_coin_list" />
+        tools:layout="@layout/fragment_coin_list" >
+        <action
+            android:id="@+id/go_to_details"
+            app:destination="@id/coin_details_fragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/coin_details_fragment"
+        android:name="com.aslansari.bitcointicker.coin.ui.CoinDetailsFragment"
+        tools:layout="@layout/fragment_coin_detail" >
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="name"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
 
     <fragment
         android:id="@+id/favourite_list_fragment"

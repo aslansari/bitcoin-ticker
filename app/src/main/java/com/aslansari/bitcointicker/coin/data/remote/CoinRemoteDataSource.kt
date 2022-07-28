@@ -10,4 +10,8 @@ class CoinRemoteDataSource @Inject constructor(
     suspend fun getCoinList(): List<CoinDTO> {
         return coinService.getCoinList(false)
     }
+
+    suspend fun getCoinDetail(coinId: String): CoinDetailsResponse {
+        return coinService.getCoinDetails(coinId)
+    }
 }

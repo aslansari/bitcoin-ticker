@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.bitcointicker.BaseFragment
@@ -54,6 +55,15 @@ class CoinListFragment : BaseFragment() {
                 (binding.coinList.adapter as CoinListAdapter).submitList(it)
             }
         }
+        (binding.coinList.adapter as CoinListAdapter).itemClickListener = { item ->
+            val directions = CoinListFragmentDirections.goToDetails(id = item.id, name = item.name)
+            findNavController().navigate(directions)
+        }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        (binding.coinList.adapter as CoinListAdapter).itemClickListener = null
+        binding.coinList.adapter = null
+    }
 }
