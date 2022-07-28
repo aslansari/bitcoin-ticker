@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.bitcointicker.BaseFragment
 import com.aslansari.bitcointicker.R
 import com.aslansari.bitcointicker.databinding.FragmentCoinListBinding
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class CoinListFragment : BaseFragment() {
@@ -47,10 +49,11 @@ class CoinListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        coinListViewModel.coinListLiveData.observe(viewLifecycleOwner) {
-            (binding.coinList.adapter as CoinListAdapter).submitList(it)
+        lifecycleScope.launchWhenStarted {
+            coinListViewModel.coinListFlow().collectLatest {
+                (binding.coinList.adapter as CoinListAdapter).submitList(it)
+            }
         }
-        coinListViewModel.getCoins()
     }
 
 }

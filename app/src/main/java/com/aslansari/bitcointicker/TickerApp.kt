@@ -9,6 +9,6 @@ class TickerApp: Application() {
 
     val appComponent: AppComponent = DaggerAppComponent
         .builder()
-        .appModule(AppModule())
+        .appModule(AppModule(this))
         .build()
 }

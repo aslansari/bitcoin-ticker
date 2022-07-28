@@ -1,9 +1,11 @@
 package com.aslansari.bitcointicker.coin.ui
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.aslansari.bitcointicker.coin.domain.GetCoinListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -15,12 +17,8 @@ class CoinListViewModel @Inject constructor(
     private val _coinListState = MutableLiveData<List<CoinListItem>>()
     val coinListLiveData = _coinListState as LiveData<List<CoinListItem>>
 
-    fun getCoins() {
-        viewModelScope.launch(coroutineDispatcher) {
-            val coinList = getCoinListUseCase()
-            _coinListState.value = coinList
-        }
-    }
+    suspend fun coinListFlow() = getCoinListUseCase()
+
 }
 
 @Suppress("UNCHECKED_CAST")

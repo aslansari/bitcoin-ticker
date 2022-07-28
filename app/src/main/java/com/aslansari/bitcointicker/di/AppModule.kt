@@ -1,5 +1,8 @@
 package com.aslansari.bitcointicker.di
 
+import android.app.Application
+import com.aslansari.bitcointicker.coin.data.local.CoinDAO
+import com.aslansari.bitcointicker.coin.data.local.CoinDatabase
 import com.aslansari.bitcointicker.coin.data.remote.BASE_URL
 import com.aslansari.bitcointicker.coin.data.remote.CoinService
 import dagger.Module
@@ -11,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-class AppModule {
+class AppModule(private val application: Application) {
 
     @Provides
     fun loggingInterceptor(): Interceptor = HttpLoggingInterceptor().apply {
@@ -39,5 +42,17 @@ class AppModule {
     @AppScope
     fun coinService(retrofit: Retrofit): CoinService {
         return retrofit.create(CoinService::class.java)
+    }
+
+    @Provides
+    @AppScope
+    fun coinDatabase(): CoinDatabase {
+        return CoinDatabase.getDatabase(application)
+    }
+
+    @Provides
+    @AppScope
+    fun coinDao(coinDatabase: CoinDatabase): CoinDAO {
+        return coinDatabase.getCoinDao()
     }
 }
