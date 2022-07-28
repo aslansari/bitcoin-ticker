@@ -2,4 +2,6 @@
     <string name="app_name">Bitcoin Ticker</string>
     <string name="nav_bar_coins">Coins</string>
     <string name="nav_bar_favourite">Favourites</string>
+    <string name="content_desc_login_image">A woman is logging in to her account</string>
+    <string name="login_button_text">Login to Continue</string>
 </resources>

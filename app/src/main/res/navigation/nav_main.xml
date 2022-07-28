@@ -13,5 +13,5 @@
     <fragment
         android:id="@+id/favourite_list_fragment"
         android:name="com.aslansari.bitcointicker.favourite.FavouriteListFragment"
-        tools:layout="@layout/fragment_coin_list" />
+        tools:layout="@layout/fragment_favourite_list" />
 </navigation>

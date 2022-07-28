@@ -4,6 +4,8 @@ import android.app.Application
 import com.aslansari.bitcointicker.di.AppComponent
 import com.aslansari.bitcointicker.di.AppModule
 import com.aslansari.bitcointicker.di.DaggerAppComponent
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 
 class TickerApp: Application() {
 
@@ -11,4 +13,9 @@ class TickerApp: Application() {
         .builder()
         .appModule(AppModule(this))
         .build()
+
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)
+    }
 }
