@@ -18,4 +18,10 @@ interface CoinDAO {
 
     @Query("SELECT EXISTS(SELECT * FROM coins)")
     fun isExists(): Boolean
+
+    @Query("SELECT * FROM coins WHERE name LIKE '%' || :query || '%' or symbol like '%' || :query || '%'")
+    suspend fun getCoinListFilteredBy(query: String): List<CoinDTO>
+
+    @Query("SELECT * FROM coins WHERE name == :query  or symbol == :query")
+    suspend fun getCoinListFilteredByExact(query: String): List<CoinDTO>
 }

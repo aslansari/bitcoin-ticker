@@ -23,4 +23,10 @@ class GetCoinListUseCase @Inject constructor(
             }
         }
     }
+
+    suspend fun filterBy(query: String): List<CoinListItem> = withContext(Dispatchers.IO) {
+        coinRepository.getCoinListFilterBy(query).map { dto ->
+            CoinListItem(dto.id, dto.symbol, dto.name)
+        }
+    }
 }

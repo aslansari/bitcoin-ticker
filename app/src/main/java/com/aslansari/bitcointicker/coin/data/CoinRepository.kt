@@ -12,8 +12,6 @@ class CoinRepository @Inject constructor(
     private val coinLocalDataSource: CoinLocalDataSource,
 ) {
 
-    private val EXPIRE_DURATION = 3.minutes
-
     suspend fun getCoinList(): Flow<List<CoinDTO>> {
         if (!coinLocalDataSource.hasCoins()) {
             val list = coinRemoteDataSource.getCoinList()
@@ -24,5 +22,9 @@ class CoinRepository @Inject constructor(
 
     suspend fun getCoinDetails(coinId: String): CoinDetailsResponse {
         return coinRemoteDataSource.getCoinDetail(coinId)
+    }
+
+    suspend fun getCoinListFilterBy(query: String): List<CoinDTO> {
+        return coinLocalDataSource.getCoinListFilterBy(query)
     }
 }

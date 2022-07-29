@@ -12,4 +12,5 @@
     <string name="favourite">Favourite</string>
     <string name="removed_from_favourites">coin removed from favourites</string>
     <string name="added_to_favourites">coin added to favourites</string>
+    <string name="menu_search">Search</string>
 </resources>

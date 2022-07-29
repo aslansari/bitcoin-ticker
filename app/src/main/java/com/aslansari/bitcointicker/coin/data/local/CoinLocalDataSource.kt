@@ -20,4 +20,8 @@ class CoinLocalDataSource @Inject constructor(
         coinDAO.addCoinList(coinList)
     }
 
+    suspend fun getCoinListFilterBy(query: String): List<CoinDTO> {
+        return coinDAO.getCoinListFilteredBy(query)
+    }
+
 }

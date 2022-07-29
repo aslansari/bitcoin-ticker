@@ -1,17 +1,24 @@
 package com.aslansari.bitcointicker.coin.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuCompat
+import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.bitcointicker.BaseFragment
 import com.aslansari.bitcointicker.R
 import com.aslansari.bitcointicker.databinding.FragmentCoinListBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -38,6 +45,7 @@ class CoinListFragment : BaseFragment() {
         // Inflate the layout for this fragment
         binding = FragmentCoinListBinding.inflate(layoutInflater, container, false)
         binding.apply {
+            NavigationUI.setupWithNavController(toolbar, findNavController())
             coinList.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
@@ -52,6 +60,11 @@ class CoinListFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted {
             coinListViewModel.coinListFlow().collectLatest {
+                (binding.coinList.adapter as CoinListAdapter).submitList(it)
+            }
+        }
+        lifecycleScope.launchWhenCreated {
+            coinListViewModel.registerSearch(binding.toolbar.menu.findItem(R.id.search).actionView as SearchView).collect {
                 (binding.coinList.adapter as CoinListAdapter).submitList(it)
             }
         }
