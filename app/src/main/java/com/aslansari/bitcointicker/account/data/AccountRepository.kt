@@ -11,4 +11,7 @@ class AccountRepository @Inject constructor(
         return auth.currentUser != null
     }
 
+    fun getUserId(): String? {
+        return auth.uid
+    }
 }

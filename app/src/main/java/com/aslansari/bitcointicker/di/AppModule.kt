@@ -6,6 +6,7 @@ import com.aslansari.bitcointicker.coin.data.local.CoinDatabase
 import com.aslansari.bitcointicker.coin.data.remote.BASE_URL
 import com.aslansari.bitcointicker.coin.data.remote.CoinService
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
@@ -61,4 +62,8 @@ class AppModule(private val application: Application) {
     @Provides
     @AppScope
     fun auth() = Firebase.auth
+
+    @Provides
+    @AppScope
+    fun cloudStore() = Firebase.firestore
 }

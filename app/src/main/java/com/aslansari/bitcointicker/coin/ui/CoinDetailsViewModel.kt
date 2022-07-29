@@ -2,28 +2,37 @@ package com.aslansari.bitcointicker.coin.ui
 
 import androidx.lifecycle.*
 import com.aslansari.bitcointicker.coin.domain.GetCoinDetailsUseCase
+import com.aslansari.bitcointicker.favourite.domain.GetFavouriteCoinsUseCase
+import com.aslansari.bitcointicker.favourite.domain.RemoveFromFavouriteUseCase
+import com.aslansari.bitcointicker.favourite.domain.SaveToFavouriteUseCase
+import com.aslansari.bitcointicker.favourite.ui.FavouriteCoin
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
 class CoinDetailsViewModel @Inject constructor(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
+    private val getFavouriteCoinsUseCase: GetFavouriteCoinsUseCase,
+    private val saveToFavouriteUseCase: SaveToFavouriteUseCase,
+    private val removeFromFavouriteUseCase: RemoveFromFavouriteUseCase,
     private val coroutineDispatcher: CoroutineDispatcher,
-): ViewModel() {
+) : ViewModel() {
 
     private val _coinDetailsUIState = MutableLiveData<CoinDetailsUIState>()
     val coinDetailsUIState = _coinDetailsUIState as LiveData<CoinDetailsUIState>
+
+    private val _favIconState = MutableLiveData<Boolean>()
+    val favIconState = _favIconState as LiveData<Boolean>
 
     fun fetch(id: String) {
         viewModelScope.launch(coroutineDispatcher) {
             _coinDetailsUIState.value = CoinDetailsUIState.Loading
             val details = getCoinDetailsUseCase(id)
             val detailsUIState = CoinDetailsUIState.Result(
+                details.id,
                 details.name,
+                details.symbol,
                 details.hashingAlgorithm,
                 details.description.englishDescription,
                 details.marketData.currentPrice.usd,
@@ -34,57 +43,47 @@ class CoinDetailsViewModel @Inject constructor(
         }
     }
 
-}
-
-object DisplayTextUtil {
-
-    object Amount {
-        private val decimalFormat = DecimalFormat("###,##0.00", DecimalFormatSymbols(Locale.US))
-        private val currencyFormat = DecimalFormat("###,##0.################", DecimalFormatSymbols(
-            Locale.US)
-        )
-        private val rateFormat = DecimalFormat("#0.###", DecimalFormatSymbols(Locale.US))
-
-        /**
-         * Get dollar amount for display
-         * @param amount amount in cents
-         * @return return formatted string {$12.45 USD}
-         */
-        fun getDollarAmount(amount: Double): String {
-            val dollarAmount = decimalFormat.format(amount)
-            return "$${dollarAmount} USD"
+    fun saveToFavourites(favouriteCoin: FavouriteCoin) {
+        viewModelScope.launch(coroutineDispatcher) {
+            _favIconState.value = false
+            saveToFavouriteUseCase(favouriteCoin)
+            _favIconState.value = true
         }
-
-        fun getCurrencyFormat(amount: Double): String = currencyFormat.format(amount)
-
-        fun getRateFormat(amount: Double): String = rateFormat.format(amount)
-
-        fun decimalFormat(amount: Double): String = decimalFormat.format(amount)
     }
-}
 
-sealed class CoinDetailsUIState {
-    object Loading: CoinDetailsUIState()
-    object Error: CoinDetailsUIState()
-    data class Result(
-        val name: String,
-        val hashAlgorithm: String?,
-        val description: String?,
-        val priceUSD: Double,
-        val roiLastDay: Double,
-        val imageUrl: String?,
-    ): CoinDetailsUIState()
+    fun removeFromFavourites(favouriteCoin: FavouriteCoin) {
+        viewModelScope.launch(coroutineDispatcher) {
+            _favIconState.value = false
+            removeFromFavouriteUseCase(favouriteCoin)
+            _favIconState.value = true
+        }
+    }
+
+    suspend fun isCoinFav(id: String): Boolean {
+        val favCoin = getFavouriteCoinsUseCase().find { it.id == id }
+        return favCoin != null
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")
 class CoinDetailsViewModelFactory @Inject constructor(
     private val getCoinDetailsUseCaseProvider: Provider<GetCoinDetailsUseCase>,
+    private val getFavouriteCoinsUseCaseProvider: Provider<GetFavouriteCoinsUseCase>,
+    private val saveToFavouriteUseCaseProvider: Provider<SaveToFavouriteUseCase>,
+    private val removeFromFavouriteUseCaseProvider: Provider<RemoveFromFavouriteUseCase>,
     private val coroutineDispatcher: CoroutineDispatcher,
-): ViewModelProvider.Factory {
+) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CoinDetailsViewModel::class.java)) {
-            return CoinDetailsViewModel(getCoinDetailsUseCaseProvider.get(), coroutineDispatcher) as T
+            return CoinDetailsViewModel(
+                getCoinDetailsUseCaseProvider.get(),
+                getFavouriteCoinsUseCaseProvider.get(),
+                saveToFavouriteUseCaseProvider.get(),
+                removeFromFavouriteUseCaseProvider.get(),
+                coroutineDispatcher
+            ) as T
         }
         return super.create(modelClass)
     }
