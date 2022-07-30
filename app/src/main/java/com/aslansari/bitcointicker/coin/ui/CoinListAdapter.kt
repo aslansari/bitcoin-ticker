@@ -35,6 +35,7 @@ class CoinListAdapter: ListAdapter<CoinListItem, CoinListAdapter.CoinItemViewHol
 
     class CoinItemViewHolder(private val binding: CoinListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CoinListItem) {
+            binding.textFieldCoinName.text = item.name
             binding.textFieldCoinSymbol.text = item.symbol
         }
     }

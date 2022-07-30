@@ -12,6 +12,7 @@ class CoinFetchIntervalUseCase @Inject constructor(
     suspend fun get() = fetchIntervalDataStore.getFetchInterval()
 
     suspend fun set(interval: Long): Boolean {
+        // additional business logic can be added here, such as limiting min/max interval time
         fetchIntervalDataStore.setFetchInterval(interval)
         return true
     }
