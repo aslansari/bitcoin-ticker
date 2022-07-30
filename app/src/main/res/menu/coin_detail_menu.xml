@@ -9,4 +9,10 @@
         android:icon="@drawable/ic_favourite"
         android:title="@string/nav_bar_favourite"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/fetch_interval"
+        android:icon="@drawable/ic_timeline"
+        android:title="@string/menu_fetch_interval"
+        app:showAsAction="never" />
 </menu>

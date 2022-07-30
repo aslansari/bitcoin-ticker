@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
 
-// todo input field that use can define the refresh interval of current price
 class CoinDetailsFragment : BaseDialogFragment() {
 
     @Inject
@@ -55,18 +54,25 @@ class CoinDetailsFragment : BaseDialogFragment() {
             NavigationUI.setupWithNavController(toolbar, findNavController())
             toolbar.title = args.name
             toolbar.setOnMenuItemClickListener {
-                val isFav = it.isChecked
-                val state = coinDetailsViewModel.coinDetailsUIState.value
-                if (state is CoinDetailsUIState.Result) {
-                    val favCoin = FavouriteCoin(state.id, state.name, state.symbol)
-                    if (isFav) {
-                        coinDetailsViewModel.removeFromFavourites(favCoin)
-                        Toast.makeText(requireContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show()
-                    } else {
-                        coinDetailsViewModel.saveToFavourites(favCoin)
-                        Toast.makeText(requireContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show()
+                when(it.itemId) {
+                    R.id.favourite -> {
+                        val isFav = it.isChecked
+                        val state = coinDetailsViewModel.coinDetailsUIState.value
+                        if (state is CoinDetailsUIState.Result) {
+                            val favCoin = FavouriteCoin(state.id, state.name, state.symbol)
+                            if (isFav) {
+                                coinDetailsViewModel.removeFromFavourites(favCoin)
+                                Toast.makeText(requireContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show()
+                            } else {
+                                coinDetailsViewModel.saveToFavourites(favCoin)
+                                Toast.makeText(requireContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show()
+                            }
+                            it.isChecked = it.isChecked.not()
+                        }
                     }
-                    it.isChecked = it.isChecked.not()
+                    R.id.fetch_interval -> {
+                        findNavController().navigate(R.id.update_fetch_interval)
+                    }
                 }
                 return@setOnMenuItemClickListener true
             }

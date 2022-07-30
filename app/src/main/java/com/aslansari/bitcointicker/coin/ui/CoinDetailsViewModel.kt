@@ -1,8 +1,8 @@
 package com.aslansari.bitcointicker.coin.ui
 
 import androidx.lifecycle.*
-import com.aslansari.bitcointicker.coin.domain.GetCoinDetailsUseCase
 import com.aslansari.bitcointicker.coin.domain.CoinFetchIntervalUseCase
+import com.aslansari.bitcointicker.coin.domain.GetCoinDetailsUseCase
 import com.aslansari.bitcointicker.favourite.domain.GetFavouriteCoinsUseCase
 import com.aslansari.bitcointicker.favourite.domain.RemoveFromFavouriteUseCase
 import com.aslansari.bitcointicker.favourite.domain.SaveToFavouriteUseCase
@@ -28,6 +28,7 @@ class CoinDetailsViewModel @Inject constructor(
     private val _favIconState = MutableLiveData<Boolean>()
     val favIconState = _favIconState as LiveData<Boolean>
 
+
     fun fetchWithFlow(id: String) {
         viewModelScope.launch(coroutineDispatcher) {
             while (true) {
@@ -48,6 +49,7 @@ class CoinDetailsViewModel @Inject constructor(
             }
         }
     }
+
     fun fetch(id: String) {
         viewModelScope.launch(coroutineDispatcher) {
             _coinDetailsUIState.value = CoinDetailsUIState.Loading

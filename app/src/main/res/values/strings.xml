@@ -13,4 +13,9 @@
     <string name="removed_from_favourites">coin removed from favourites</string>
     <string name="added_to_favourites">coin added to favourites</string>
     <string name="menu_search">Search</string>
+    <string name="menu_fetch_interval">Fetch Interval</string>
+    <string name="title_fetch_interval">Fetch Interval</string>
+    <string name="update">Update</string>
+    <string name="discard">Discard</string>
+    <string name="error_field_should_not_be_empty">field should not be empty</string>
 </resources>

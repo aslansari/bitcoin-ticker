@@ -26,8 +26,16 @@
             android:name="name"
             android:defaultValue=""
             app:argType="string" />
+        <action
+            android:id="@+id/update_fetch_interval"
+            app:destination="@id/fetch_interval_dialog" />
     </dialog>
 
+    <dialog
+        android:id="@+id/fetch_interval_dialog"
+        android:name="com.aslansari.bitcointicker.coin.ui.FetchIntervalDialogFragment"
+        tools:layout="@layout/dialog_fetch_interval" >
+    </dialog>
     <fragment
         android:id="@+id/favourite_list_fragment"
         android:name="com.aslansari.bitcointicker.favourite.FavouriteListFragment"

@@ -3,6 +3,7 @@ package com.aslansari.bitcointicker.di
 import android.app.Application
 import com.aslansari.bitcointicker.coin.data.local.CoinDAO
 import com.aslansari.bitcointicker.coin.data.local.CoinDatabase
+import com.aslansari.bitcointicker.coin.data.local.FetchIntervalDataStore
 import com.aslansari.bitcointicker.coin.data.remote.BASE_URL
 import com.aslansari.bitcointicker.coin.data.remote.CoinService
 import com.google.firebase.auth.ktx.auth
@@ -66,4 +67,8 @@ class AppModule(private val application: Application) {
     @Provides
     @AppScope
     fun cloudStore() = Firebase.firestore
+
+    @Provides
+    @AppScope
+    fun fetchIntervalDataStore() = FetchIntervalDataStore(application)
 }

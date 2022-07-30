@@ -1,16 +1,18 @@
 package com.aslansari.bitcointicker.coin.domain
 
-import java.util.concurrent.TimeUnit
+import com.aslansari.bitcointicker.coin.data.local.FetchIntervalDataStore
 import javax.inject.Inject
 
 class CoinFetchIntervalUseCase @Inject constructor(
+    private val fetchIntervalDataStore: FetchIntervalDataStore,
 ) {
 
-    // todo store and get this interval from datastore
-    private val interval = TimeUnit.MINUTES.toMillis(1)
+    fun getFlow() = fetchIntervalDataStore.getFetchIntervalFlow()
 
-    suspend fun get(): Long {
-        return interval
+    suspend fun get() = fetchIntervalDataStore.getFetchInterval()
+
+    suspend fun set(interval: Long): Boolean {
+        fetchIntervalDataStore.setFetchInterval(interval)
+        return true
     }
-
 }

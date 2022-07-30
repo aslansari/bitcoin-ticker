@@ -79,6 +79,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
+    // Storage
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Image Loading
     implementation 'com.github.bumptech.glide:glide:4.12.0'
