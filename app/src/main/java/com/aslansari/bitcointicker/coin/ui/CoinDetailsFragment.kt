@@ -81,6 +81,9 @@ class CoinDetailsFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         coinDetailsViewModel.fetch(args.id)
+        lifecycleScope.launchWhenResumed {
+            coinDetailsViewModel.fetchWithFlow(args.id)
+        }
         coinDetailsViewModel.coinDetailsUIState.observe(viewLifecycleOwner) { state ->
             binding.progressBar.isVisible = state is CoinDetailsUIState.Loading
             when (state) {
@@ -167,6 +170,5 @@ class CoinDetailsFragment : BaseDialogFragment() {
                 )
             }
         }
-
     }
 }
