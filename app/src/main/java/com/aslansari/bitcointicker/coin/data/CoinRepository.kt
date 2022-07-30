@@ -1,5 +1,6 @@
 package com.aslansari.bitcointicker.coin.data
 
+import android.util.Log
 import com.aslansari.bitcointicker.coin.data.local.CoinLocalDataSource
 import com.aslansari.bitcointicker.coin.data.remote.CoinDetailsResponse
 import com.aslansari.bitcointicker.coin.data.remote.CoinRemoteDataSource
@@ -15,12 +16,13 @@ class CoinRepository @Inject constructor(
     suspend fun getCoinList(): Flow<List<CoinDTO>> {
         if (!coinLocalDataSource.hasCoins()) {
             val list = coinRemoteDataSource.getCoinList()
-            coinLocalDataSource.addCoins(list)
+            list.onSuccess { coinLocalDataSource.addCoins(it) }
+                .onFailure { Log.e("CoinRepository", "Coin list fetch error") }
         }
         return coinLocalDataSource.getCoinList()
     }
 
-    suspend fun getCoinDetails(coinId: String): CoinDetailsResponse {
+    suspend fun getCoinDetails(coinId: String): Result<CoinDetailsResponse> {
         return coinRemoteDataSource.getCoinDetail(coinId)
     }
 

@@ -59,13 +59,12 @@ class CoinDetailsFragment : BaseDialogFragment() {
                         val isFav = it.isChecked
                         val state = coinDetailsViewModel.coinDetailsUIState.value
                         if (state is CoinDetailsUIState.Result) {
-                            val favCoin = FavouriteCoin(state.id, state.name, state.symbol)
+                            val details = state.coinDetails
+                            val favCoin = FavouriteCoin(details.id, details.name, details.symbol)
                             if (isFav) {
                                 coinDetailsViewModel.removeFromFavourites(favCoin)
-                                Toast.makeText(requireContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show()
                             } else {
                                 coinDetailsViewModel.saveToFavourites(favCoin)
-                                Toast.makeText(requireContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show()
                             }
                             it.isChecked = it.isChecked.not()
                         }
@@ -94,12 +93,13 @@ class CoinDetailsFragment : BaseDialogFragment() {
             binding.progressBar.isVisible = state is CoinDetailsUIState.Loading
             when (state) {
                 is CoinDetailsUIState.Result -> {
+                    val details = state.coinDetails
                     binding.textFieldCoinPrice.text =
-                        DisplayTextUtil.Amount.getDollarAmount(state.priceUSD)
-                    bindRoiData(state.roiLastDay)
-                    bindDescription(state.description)
-                    bindHashAlgorithm(state.hashAlgorithm)
-                    state.imageUrl?.let {
+                        DisplayTextUtil.Amount.getDollarAmount(details.priceUSD)
+                    bindRoiData(details.roiLastDay)
+                    bindDescription(details.description)
+                    bindHashAlgorithm(details.hashAlgorithm)
+                    details.imageUrl?.let {
                         Glide.with(requireContext())
                             .load(it)
                             .addListener(object : RequestListener<Drawable> {
@@ -129,8 +129,25 @@ class CoinDetailsFragment : BaseDialogFragment() {
                 else -> {}
             }
         }
-        coinDetailsViewModel.favIconState.observe(viewLifecycleOwner) { enabled ->
-            binding.toolbar.menu.findItem(R.id.favourite).isEnabled = enabled
+        coinDetailsViewModel.favIconState.observe(viewLifecycleOwner) { state ->
+            binding.toolbar.menu.findItem(R.id.favourite).isEnabled = state !is FavIconUIState.Loading
+            when(state) {
+                is FavIconUIState.Result -> {
+                    if (state.favouriteAction == FavouriteAction.SAVE_TO_FAV) {
+                        Toast.makeText(requireContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show()
+                    } else if (state.favouriteAction == FavouriteAction.REMOVE_FROM_FAV) {
+                        Toast.makeText(requireContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is FavIconUIState.Error -> {
+                    if (state.favouriteAction == FavouriteAction.SAVE_TO_FAV) {
+                        Toast.makeText(requireContext(), getString(R.string.error_failed_add_to_favourites), Toast.LENGTH_SHORT).show()
+                    } else if (state.favouriteAction == FavouriteAction.REMOVE_FROM_FAV) {
+                        Toast.makeText(requireContext(), getString(R.string.error_failed_remove_from_favourites), Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else -> {}
+            }
         }
     }
 

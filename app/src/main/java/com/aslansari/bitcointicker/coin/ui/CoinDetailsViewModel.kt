@@ -1,5 +1,6 @@
 package com.aslansari.bitcointicker.coin.ui
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.aslansari.bitcointicker.coin.domain.CoinFetchIntervalUseCase
 import com.aslansari.bitcointicker.coin.domain.GetCoinDetailsUseCase
@@ -25,8 +26,8 @@ class CoinDetailsViewModel @Inject constructor(
     private val _coinDetailsUIState = MutableLiveData<CoinDetailsUIState>()
     val coinDetailsUIState = _coinDetailsUIState as LiveData<CoinDetailsUIState>
 
-    private val _favIconState = MutableLiveData<Boolean>()
-    val favIconState = _favIconState as LiveData<Boolean>
+    private val _favIconState = MutableLiveData<FavIconUIState>()
+    val favIconState = _favIconState as LiveData<FavIconUIState>
 
 
     fun fetchWithFlow(id: String) {
@@ -34,18 +35,14 @@ class CoinDetailsViewModel @Inject constructor(
             while (true) {
                 delay(coinFetchIntervalUseCase.get())
                 _coinDetailsUIState.value = CoinDetailsUIState.Loading
-                val details = getCoinDetailsUseCase(id)
-                val detailsUIState = CoinDetailsUIState.Result(
-                    details.id,
-                    details.name,
-                    details.symbol,
-                    details.hashingAlgorithm,
-                    details.description.englishDescription,
-                    details.marketData.currentPrice.usd,
-                    details.marketData.priceChangePercentage24h,
-                    details.image?.largeImageUrl,
-                )
-                _coinDetailsUIState.value = detailsUIState
+                getCoinDetailsUseCase(id)
+                    .onSuccess {
+                        val detailsUIState = CoinDetailsUIState.Result(it)
+                        _coinDetailsUIState.value = detailsUIState
+                    }
+                    .onFailure {
+                        Log.e("CoinsDetailsViewModel", "coin details fetch error")
+                    }
             }
         }
     }
@@ -53,34 +50,38 @@ class CoinDetailsViewModel @Inject constructor(
     fun fetch(id: String) {
         viewModelScope.launch(coroutineDispatcher) {
             _coinDetailsUIState.value = CoinDetailsUIState.Loading
-            val details = getCoinDetailsUseCase(id)
-            val detailsUIState = CoinDetailsUIState.Result(
-                details.id,
-                details.name,
-                details.symbol,
-                details.hashingAlgorithm,
-                details.description.englishDescription,
-                details.marketData.currentPrice.usd,
-                details.marketData.priceChangePercentage24h,
-                details.image?.largeImageUrl,
-            )
-            _coinDetailsUIState.value = detailsUIState
+            getCoinDetailsUseCase(id)
+                .onSuccess {
+                    val detailsUIState = CoinDetailsUIState.Result(it)
+                    _coinDetailsUIState.value = detailsUIState
+                }
+                .onFailure {
+                    _coinDetailsUIState.value = CoinDetailsUIState.Error
+                }
         }
     }
 
     fun saveToFavourites(favouriteCoin: FavouriteCoin) {
         viewModelScope.launch(coroutineDispatcher) {
-            _favIconState.value = false
-            saveToFavouriteUseCase(favouriteCoin)
-            _favIconState.value = true
+            _favIconState.value = FavIconUIState.Loading
+            val isSuccess = saveToFavouriteUseCase(favouriteCoin)
+            _favIconState.value = if (isSuccess) {
+                FavIconUIState.Result(FavouriteAction.SAVE_TO_FAV)
+            } else {
+                FavIconUIState.Error(FavouriteAction.SAVE_TO_FAV)
+            }
         }
     }
 
     fun removeFromFavourites(favouriteCoin: FavouriteCoin) {
         viewModelScope.launch(coroutineDispatcher) {
-            _favIconState.value = false
-            removeFromFavouriteUseCase(favouriteCoin)
-            _favIconState.value = true
+            _favIconState.value = FavIconUIState.Loading
+            val isSuccess = removeFromFavouriteUseCase(favouriteCoin)
+            _favIconState.value = if (isSuccess) {
+                FavIconUIState.Result(FavouriteAction.REMOVE_FROM_FAV)
+            } else {
+                FavIconUIState.Error(FavouriteAction.REMOVE_FROM_FAV)
+            }
         }
     }
 
