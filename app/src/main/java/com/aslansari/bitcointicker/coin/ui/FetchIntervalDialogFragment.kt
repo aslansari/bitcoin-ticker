@@ -67,7 +67,9 @@ class FetchIntervalDialogFragment : BaseDialogFragment() {
                 is FetchIntervalUIState.Result -> {
                     dismiss()
                 }
-                is FetchIntervalUIState.Error -> {}
+                is FetchIntervalUIState.Error -> {
+                    binding.textFieldFetchInterval.error = getText(R.string.fetch_interval_too_low)
+                }
                 else -> {}
             }
         }

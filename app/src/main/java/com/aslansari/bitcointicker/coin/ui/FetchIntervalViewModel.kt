@@ -31,14 +31,6 @@ class FetchIntervalViewModel @Inject constructor(
     }
 }
 
-sealed class FetchIntervalUIState {
-    object Loading : FetchIntervalUIState()
-    object Error : FetchIntervalUIState()
-    data class Result(
-        val timeInterval: Long,
-    ) : FetchIntervalUIState()
-}
-
 @Suppress("UNCHECKED_CAST")
 class FetchIntervalViewModelFactory @Inject constructor(
     private val coinFetchIntervalUseCaseProvider: Provider<CoinFetchIntervalUseCase>,

@@ -20,4 +20,5 @@
     <string name="error_field_should_not_be_empty">field should not be empty</string>
     <string name="error_failed_add_to_favourites">Failed to add to favourites</string>
     <string name="error_failed_remove_from_favourites">Failed to remove from favourites</string>
+    <string name="fetch_interval_too_low">Fetch interval too low, please type a higher number</string>
 </resources>
