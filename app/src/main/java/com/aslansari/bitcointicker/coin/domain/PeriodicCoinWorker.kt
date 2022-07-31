@@ -2,6 +2,7 @@ package com.aslansari.bitcointicker.coin.domain
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.getActivity
 import android.content.Context
@@ -17,13 +18,13 @@ import android.os.Build.VERSION_CODES.O
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.aslansari.bitcointicker.MainActivity
 import com.aslansari.bitcointicker.R
 import com.aslansari.bitcointicker.favourite.domain.FavouriteCoinDTO
 import com.aslansari.bitcointicker.favourite.domain.GetFavouriteCoinsUseCase
+import com.aslansari.bitcointicker.ui.util.DisplayTextUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -71,18 +72,29 @@ class PeriodicCoinWorker @AssistedInject constructor(
             }
             if (changeList.isNotEmpty()) {
                 val id = inputData.getLong(NOTIFICATION_ID, 0).toInt()
-                sendNotification(id, getNotificationTitle(changeList[0]), getNotificationMessage(changeList[0]))
+                sendNotification(
+                    id,
+                    getNotificationTitle(changeList[0]),
+                    getNotificationMessage(changeList[0])
+                )
             }
         }
         return Result.success()
     }
 
     private fun getNotificationTitle(priceChange: PriceChange): String {
-        return appContext.getString(R.string.notification_price_change_title, getPriceChangeString(priceChange.isUp))
+        return appContext.getString(
+            R.string.notification_price_change_title,
+            getPriceChangeString(priceChange.isUp)
+        )
     }
 
     private fun getNotificationMessage(priceChange: PriceChange): String {
-        return appContext.getString(R.string.notification_price_change_message, priceChange.favouriteCoin.name, priceChange.newPrice)
+        return appContext.getString(
+            R.string.notification_price_change_message,
+            priceChange.favouriteCoin.name,
+            DisplayTextUtil.Amount.getDollarAmount(priceChange.newPrice)
+        )
     }
 
     private fun getPriceChangeString(isUp: Boolean): String {
