@@ -24,11 +24,17 @@ You can also add coin to favourites in this page by clicking the icon in the too
 
 ### Favourites
 
-You can add coins to favourites. To be able to do this, user should be logged in.
+After logging in to an account, user can add coins to favourites. Added coins can be viewed in Favourites page.
+Current prices of coins can also be viewed in Favourites page.
 
 ### User Login
 
 You can register and login with your email. User login is required for adding coins to favourites.
+
+### Background Tracking
+
+If user is logged in and added coins to favourites, these coins are tracked in the background for price change.  
+Last prices are recorded and if any of the coin's price is changed, related notification is sent to user, letting them know about the change and the current price.
 
 ## Technology Stack & Details
 
@@ -38,6 +44,7 @@ You can register and login with your email. User login is required for adding co
 - [View binding](https://developer.android.com/topic/libraries/view-binding)
 - [Firebase Authentication](https://firebase.google.com/docs/auth)
 - [Firebase Could Firestore](https://firebase.google.com/docs/firestore) for storing favourite coins for user
+- [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/basics) for background tracking of favourite coins
 
 ## Documentation
 
@@ -76,3 +83,9 @@ service cloud.firestore {
   }
 }
 ```
+
+## Improvements
+
+Possible improvement can ve adding more tests. Writing tests is taken into consideration during the development of this project. Domain layer classes (mostly UseCases) are free from platform dependent classes.  
+
+By implementing Actor pattern and using the interfaces in the domain layer, these classes can be abstracted. Then it would be suitable to write fake classes for certain test conditions.
