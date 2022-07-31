@@ -21,7 +21,7 @@ class CoinLocalDataSource @Inject constructor(
     }
 
     suspend fun getCoinListFilterBy(query: String): List<CoinDTO> {
-        return coinDAO.getCoinListFilteredBy(query)
+        return coinDAO.getCoinListFilteredByExact(query)
     }
 
 }

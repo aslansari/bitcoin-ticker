@@ -17,7 +17,7 @@ class RemoveFromFavouriteUseCase @Inject constructor(
             val userId = accountRepository.getUserId()
             if (userId != null) {
                 val favCoin = favouriteCoin.let {
-                    FavouriteCoinDTO(it.id, it.name, it.symbol)
+                    FavouriteCoinDTO(it.id, it.name, it.symbol, it.priceUsd)
                 }
                 favouriteRepository.removeFromFavourites(userId, favCoin)
             } else {

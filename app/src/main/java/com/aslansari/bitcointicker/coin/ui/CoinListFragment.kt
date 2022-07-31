@@ -1,14 +1,11 @@
 package com.aslansari.bitcointicker.coin.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuCompat
-import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.bitcointicker.BaseFragment
 import com.aslansari.bitcointicker.R
 import com.aslansari.bitcointicker.databinding.FragmentCoinListBinding
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -67,6 +63,10 @@ class CoinListFragment : BaseFragment() {
             coinListViewModel.registerSearch(binding.toolbar.menu.findItem(R.id.search).actionView as SearchView).collect {
                 (binding.coinList.adapter as CoinListAdapter).submitList(it)
             }
+        }
+        coinListViewModel.coinListLiveData.observe(viewLifecycleOwner) { state ->
+            binding.progressBar.isVisible = state is CoinListUIState.Loading
+
         }
         (binding.coinList.adapter as CoinListAdapter).itemClickListener = { item ->
             val directions = CoinListFragmentDirections.goToDetails(id = item.id, name = item.name)

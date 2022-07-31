@@ -60,7 +60,7 @@ class CoinDetailsFragment : BaseDialogFragment() {
                         val state = coinDetailsViewModel.coinDetailsUIState.value
                         if (state is CoinDetailsUIState.Result) {
                             val details = state.coinDetails
-                            val favCoin = FavouriteCoin(details.id, details.name, details.symbol)
+                            val favCoin = FavouriteCoin(details.id, details.name, details.symbol, details.priceUSD)
                             if (isFav) {
                                 coinDetailsViewModel.removeFromFavourites(favCoin)
                             } else {
@@ -78,7 +78,13 @@ class CoinDetailsFragment : BaseDialogFragment() {
         }
         lifecycleScope.launch {
             val isCurrentFav = coinDetailsViewModel.isCoinFav(args.id)
-            binding.toolbar.menu.findItem(R.id.favourite).isChecked = isCurrentFav
+            val menuItem = binding.toolbar.menu.findItem(R.id.favourite)
+            menuItem.isChecked = isCurrentFav
+            if (isCurrentFav) {
+                menuItem.icon = requireContext().getDrawable(R.drawable.ic_favourite_filled)
+            } else {
+                menuItem.icon = requireContext().getDrawable(R.drawable.ic_favourite_border)
+            }
         }
         return binding.root
     }
@@ -135,8 +141,10 @@ class CoinDetailsFragment : BaseDialogFragment() {
                 is FavIconUIState.Result -> {
                     if (state.favouriteAction == FavouriteAction.SAVE_TO_FAV) {
                         Toast.makeText(requireContext(), getString(R.string.added_to_favourites), Toast.LENGTH_SHORT).show()
+                        binding.toolbar.menu.findItem(R.id.favourite).icon = requireContext().getDrawable(R.drawable.ic_favourite_filled)
                     } else if (state.favouriteAction == FavouriteAction.REMOVE_FROM_FAV) {
                         Toast.makeText(requireContext(), getString(R.string.removed_from_favourites), Toast.LENGTH_SHORT).show()
+                        binding.toolbar.menu.findItem(R.id.favourite).icon = requireContext().getDrawable(R.drawable.ic_favourite_border)
                     }
                 }
                 is FavIconUIState.Error -> {

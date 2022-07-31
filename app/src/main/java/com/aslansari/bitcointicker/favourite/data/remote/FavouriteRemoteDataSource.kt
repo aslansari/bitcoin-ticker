@@ -19,7 +19,8 @@ class FavouriteRemoteDataSource @Inject constructor(
                     val id: String = doc.get("id", String::class.java) ?: ""
                     val name: String = doc.get("name", String::class.java) ?: ""
                     val symbol: String = doc.get("symbol", String::class.java) ?: ""
-                    FavouriteCoin(id, name, symbol)
+                    val priceUsd: Double = doc.get("priceUsd", Double::class.java) ?: 0.0
+                    FavouriteCoin(id, name, symbol, priceUsd)
                 }
                 cont.resume(coinList)
             } else {
@@ -31,6 +32,19 @@ class FavouriteRemoteDataSource @Inject constructor(
     suspend fun addToFavourites(userId: String, favouriteCoin: FavouriteCoin): Boolean = suspendCoroutine { cont ->
         val favCollection = firestore.collection("/users/${userId}/favourites")
         favCollection.document().set(favouriteCoin).addOnCompleteListener {
+            cont.resume(it.isSuccessful)
+        }
+    }
+
+    suspend fun updateFavouriteCoinPrice(userId: String, favouriteCoin: FavouriteCoin): Boolean = suspendCoroutine { cont ->
+        val favCollection = firestore.collection("/users/${userId}/favourites")
+        val batch = firestore.batch()
+        favCollection.whereEqualTo("id", favouriteCoin.id).get().continueWith {
+            it.result.forEach { doc ->
+                batch.update(doc.reference, mapOf("priceUsd" to favouriteCoin.priceUsd))
+            }
+            batch.commit()
+        }.addOnCompleteListener {
             cont.resume(it.isSuccessful)
         }
     }

@@ -15,6 +15,10 @@ class FavouriteRepository @Inject constructor(
         return favouriteRemoteDataSource.addToFavourites(userId, favouriteCoin)
     }
 
+    suspend fun updateFavCoinPrice(userId: String, favouriteCoin: FavouriteCoin): Boolean {
+        return favouriteRemoteDataSource.updateFavouriteCoinPrice(userId, favouriteCoin)
+    }
+
     suspend fun removeFromFavourites(userId: String, favouriteCoin: FavouriteCoin): Boolean {
         return favouriteRemoteDataSource.removeFromFavourites(userId, favouriteCoin)
     }
