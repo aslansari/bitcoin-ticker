@@ -21,7 +21,8 @@ class GetFavouriteCoinsUseCase @Inject constructor(
                         FavouriteCoin(
                             id = favourite.id,
                             name = favourite.name,
-                            symbol = favourite.symbol
+                            symbol = favourite.symbol,
+                            priceUsd = favourite.priceUsd
                         )
                     }
             } else {
@@ -34,4 +35,12 @@ class GetFavouriteCoinsUseCase @Inject constructor(
         }
     }
 
+    suspend fun updatePrice(favouriteCoin: FavouriteCoinDTO) {
+        if (accountRepository.isLoggedIn()) {
+            val userId = accountRepository.getUserId()
+            if (userId != null) {
+                favouriteRepository.updateFavCoinPrice(userId, favouriteCoin)
+            }
+        }
+    }
 }

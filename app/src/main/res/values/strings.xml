@@ -21,4 +21,8 @@
     <string name="error_failed_add_to_favourites">Failed to add to favourites</string>
     <string name="error_failed_remove_from_favourites">Failed to remove from favourites</string>
     <string name="fetch_interval_too_low">Fetch interval too low, please type a higher number</string>
+    <string name="up">up</string>
+    <string name="down">down</string>
+    <string name="notification_price_change_title">Your favourite coin is %1$s</string>
+    <string name="notification_price_change_message">%1$s is now $%2$s</string>
 </resources>

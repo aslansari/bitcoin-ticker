@@ -60,7 +60,7 @@ class CoinDetailsFragment : BaseDialogFragment() {
                         val state = coinDetailsViewModel.coinDetailsUIState.value
                         if (state is CoinDetailsUIState.Result) {
                             val details = state.coinDetails
-                            val favCoin = FavouriteCoin(details.id, details.name, details.symbol)
+                            val favCoin = FavouriteCoin(details.id, details.name, details.symbol, details.priceUSD)
                             if (isFav) {
                                 coinDetailsViewModel.removeFromFavourites(favCoin)
                             } else {
