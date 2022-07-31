@@ -1,31 +1,26 @@
 package com.aslansari.bitcointicker.coin.ui
 
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.aslansari.bitcointicker.coin.domain.GetCoinListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.time.Duration.Companion.seconds
 
 class CoinListViewModel @Inject constructor(
     private val getCoinListUseCase: GetCoinListUseCase,
     private val coroutineDispatcher: CoroutineDispatcher,
 ): ViewModel() {
 
-    private val _coinListState = MutableLiveData<List<CoinListItem>>()
-    val coinListLiveData = _coinListState as LiveData<List<CoinListItem>>
+    private val _coinListState = MutableLiveData<CoinListUIState>()
+    val coinListLiveData = _coinListState as LiveData<CoinListUIState>
 
-    suspend fun coinListFlow() = getCoinListUseCase()
+    suspend fun coinListFlow() = getCoinListUseCase().stateIn(viewModelScope)
 
     fun registerSearch(searchView: SearchView) = callbackFlow {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -39,13 +34,16 @@ class CoinListViewModel @Inject constructor(
             }
         })
         awaitClose { searchView.setOnQueryTextListener(null) }
-    }.debounce(1000)
+    }.debounce(500)
         .map {
+            if (it.isNullOrBlank()) {
+                return@map coinListFlow().value
+            }
+            _coinListState.value = CoinListUIState.Loading
             val list = getCoinListUseCase.filterBy(it ?: "")
-            _coinListState.value = list
+            _coinListState.value = CoinListUIState.Result
             list
         }
-
 }
 
 @Suppress("UNCHECKED_CAST")
