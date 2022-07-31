@@ -16,17 +16,51 @@
         android:minHeight="80dp">
 
         <TextView
-            android:id="@+id/textFieldCoinSymbol"
+            android:id="@+id/textFieldCoinName"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toTopOf="@+id/textFieldCoinSymbol"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tool:text="Bitcoin" />
+
+        <TextView
+            android:id="@+id/textFieldCoinSymbol"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textAllCaps="true"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldCoinName"
             tool:text="BTC" />
 
+        <TextView
+            android:id="@+id/textFieldCoinPrice"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="end"
+            android:textAlignment="viewEnd"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textAllCaps="true"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="$ 14,002.56 USD" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

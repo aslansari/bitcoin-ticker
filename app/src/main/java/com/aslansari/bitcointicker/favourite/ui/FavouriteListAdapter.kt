@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.bitcointicker.databinding.FavouriteListItemBinding
+import com.aslansari.bitcointicker.ui.util.DisplayTextUtil
 
 class FavouriteListAdapter :
     ListAdapter<FavouriteCoin, FavouriteListAdapter.FavouriteItemHolder>(FavouriteDiffUtil) {
@@ -37,7 +38,9 @@ class FavouriteListAdapter :
     class FavouriteItemHolder(private val binding: FavouriteListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FavouriteCoin) {
+            binding.textFieldCoinName.text = item.name
             binding.textFieldCoinSymbol.text = item.symbol
+            binding.textFieldCoinPrice.text = DisplayTextUtil.Amount.getDollarAmount(item.priceUsd)
         }
     }
 
