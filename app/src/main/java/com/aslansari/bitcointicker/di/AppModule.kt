@@ -16,6 +16,10 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 @Module
 class AppModule(private val application: Application) {
@@ -28,8 +32,31 @@ class AppModule(private val application: Application) {
     @Provides
     fun client(interceptor: Interceptor): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
+        trustAll(clientBuilder)
         clientBuilder.addInterceptor(interceptor)
         return clientBuilder.build()
+    }
+
+    /**
+     * Warning, this configuration is a security vulnerable and should not be used in production
+     */
+    private fun trustAll(clientBuilder: OkHttpClient.Builder) {
+        val trustAll = arrayOf<X509TrustManager>(
+            object : X509TrustManager {
+                override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {
+                }
+
+                override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate> {
+                    return arrayOf()
+                }
+            }
+        )
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAll, SecureRandom())
+        clientBuilder.sslSocketFactory(sslContext.socketFactory, trustAll[0])
     }
 
     @Provides
